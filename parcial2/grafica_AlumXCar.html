@@ -1,0 +1,144 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>Grafica Alumnos</title>
+    <link rel="stylesheet" href="menu.css" type="text/css" media="screen">
+    <meta charset="utf-8">
+    <script src="Chart.bundle.js"></script>
+    <script src="utils.js"></script>
+    <style type="text/css">
+        #listaA{
+            margin-left: 130px;
+            font-size: 20px;
+             margin-top: 2px;
+        }
+        p{	
+    		margin-top: 15px;
+    		margin-left: 120px;
+    		font-size: 25px;
+    		font-family: serif;
+    	}
+        
+    </style>
+      <script>
+      window.addEventListener("load",function(){
+            var lista3 = $("listaA");
+            var canv=$("canvas");
+            lista3.addEventListener("change",function(){
+            var valorA=lista3.value;
+            var xmlhttp=new XMLHttpRequest();
+            var arrayIns=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+            xmlhttp.onreadystatechange = function() {
+                var arrayId=[2,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,28,29,30,31,32,33,34,35,36,37];
+                if (xmlhttp.readyState==4 && xmlhttp.status==200) {
+                    var jsonResponse = xmlhttp.responseText;
+                    var objeto_json = JSON.parse(jsonResponse);
+                    for(var j=0;j<arrayId.length;j++){
+                        for (var i=0; i<objeto_json.length;i++) {
+                            var alumCar=objeto_json[i].carrera_id;
+                            var anio=objeto_json[i].anio;
+                            var alumnos=objeto_json[i].alumnos;
+                   
+                            if(alumCar==arrayId[j] && anio==valorA){
+                                arrayIns[j]+=alumnos;
+                            }
+                         }
+                         arrayIns[j]/=2;
+
+                    }
+                grafica(arrayIns);
+                //console.log(arrayIns);
+
+                    
+            }
+
+
+        }
+                xmlhttp.open("GET","grupo.json");
+                xmlhttp.send();
+                
+    });
+
+});
+
+        function $(id){
+            var r = null;
+            if(typeof id =="array") r = id.map($);
+            else r = document.getElementById(id);
+            return r;
+        }
+
+        function grafica(arreg){
+             var color = Chart.helpers.color;
+              if(window.myHorizontalBar!=null){
+                myHorizontalBar.destroy();
+            }
+                console.log(arreg);
+        var horizontalBarChartData = {
+            labels: ["Computacion", "Electronica", "Mecatronica", "Matematicas", "Fisica", "Diseño", "Empresariales","Alimentos","Industrial","M.Computo Aplicado","D.Computo Aplicado","M.Medios Interactivos","M.Administracion","M.Manufactura","M.Sistemas Distribuidos","M.Electronica","M.Robotica","M.Alimentos","M.Matematica","D.Electronica","D.Matematica","D.Robotica","M.Software","M.Diseño Muebles","M.Diseño Modas","M.Ciencia de Materiales","Mecanica","M.V.Computacion","L.Estudios Mexicanos","L.Informatica","Agronomia","L.Administracion"],
+         
+            datasets: [{
+                label: 'Alumnos',
+                backgroundColor: color(window.chartColors.orange).alpha(0.5).rgbString(),
+                borderColor: window.chartColors.orange,
+                borderWidth: 1,
+                data:arreg
+
+            }]
+
+        };
+         var ctx = document.getElementById("canvas").getContext("2d");
+            window.myHorizontalBar = new Chart(ctx, {
+                type: 'horizontalBar',
+                data: horizontalBarChartData,
+                options: {
+                    elements: {
+                        rectangle: {
+                            borderWidth: 2,
+                        }
+                    },
+                    responsive: true,
+                    legend: {
+                        position: 'right',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Alumnos por carrera y por año'
+
+                    }
+                }
+            });
+         
+        }
+   
+        
+    </script>
+</head>
+
+<body>
+	<div id="container">
+        <ul id="nav">
+
+            <li><a href="../index.html"><span><img src="home.png"/>Inicio</span></a>
+            <li><a href="grafica_AlumXCar.html"><span><img src="chart2.png" />Graph1</span></a>
+
+            <li><a href="grafica_PxIns.html"><img src="graph.png" />Graph2</a></li>
+            <li><a href="ins.html"><img src="catalog.png" />Catalogo</a></li>
+            <li><a href="../markdown/indice.html"><img src="indice.png" />Indice</a></li>
+            <li><a href="../markdown/parse.html"><img src="crear.png" />Crear Contenido</a></li>
+        </ul>
+   	</div>
+   	<p><b>Seleccione un Año</b></p>
+    <select id="listaA">
+        <option value="2015">2015</option>
+        <option value="2016">2016</option>
+        <option value="2017">2017</option>
+    </select>
+    <div id="container2">
+        <canvas id="canvas" width="900" height="800"></canvas>
+    </div>
+  
+</body>
+
+</html>

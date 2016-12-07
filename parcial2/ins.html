@@ -1,0 +1,230 @@
+<!DOCTYPE>
+<html>
+    <head>
+    	<meta charset="UTF-8">
+    	<title>Catalogo</title>
+      <link rel="stylesheet" href="menu.css" type="text/css" media="screen">
+    	<style type="text/css">
+        header{
+          display: block;
+          text-align: center;
+          margin: 1em 0 0.5em 0;
+          font-weight: 600;
+          font-family: 'Titillium Web', sans-serif;
+          position: relative;  
+          font-size: 40px;
+          line-height: 40px;
+          padding: 15px 15px 15px 15%;
+          color: #355681;
+          box-shadow: 
+          inset 0 0 0 1px rgba(53,86,129, 0.4), 
+          inset 0 0 5px rgba(53,86,129, 0.5),
+          inset -285px 0 35px white;
+          border-radius: 0 10px 0 10px;
+          background: #fff url(../images/bartoszkosowski.jpg) no-repeat center left;
+
+        }
+         #home{
+            width: 50px;
+            height: 50px;
+            float: right;
+            margin-right: 40px;
+            margin-top: 90px;
+        }
+    		#elem{
+				float: left;
+        font-size: 20px;
+    			width: 230px;
+    			height: 400px;
+    			background: #7188CA;
+    			margin-top: 2px;
+    			margin-left: 245px;
+    		}
+    		#sele{
+    			display: block;
+    			margin-left: 245px;
+          font-size: 20px;
+    		
+    		}
+    		#dat_prof{
+				margin-top: 80px;
+    			margin-left: 620px;
+    			background: #fff;
+    			font-size: 20px;
+    			width: 390px;
+    			height: 130px;
+    		}
+    		select{
+    			font-size: 20px;
+    		}
+    		p{	
+    			margin-top: 40px;
+    			margin-left: 245px;
+    			font-size: 30px;
+    		}
+    		
+    	</style>
+    	<script>
+        window.addEventListener("load",function(){
+               var list = $("sele");
+               
+               var div1 = $("elem");
+                list.addEventListener("change",function(){
+                var list2 = e("select",{"id":"profesores"});
+                var opdef=e("option",{"value":"0","selected":"selected"},"Seleccione Profesor")
+                var valorLis=list.value;
+                list2.appendChild(opdef);
+                
+            var xmlhttp=new XMLHttpRequest();
+                xmlhttp.onreadystatechange = function() {
+                     if (xmlhttp.readyState==4 && xmlhttp.status==200) {
+                        var jsonResponse = xmlhttp.responseText;
+                        var objeto_json = JSON.parse(jsonResponse);
+
+                        for (var i=0; i<objeto_json.length;i++) {
+                            var ins_prof=objeto_json[i].instituto_id;
+                            var id_prof=objeto_json[i].id;
+                            var nombre=objeto_json[i].nombres;
+
+                            if(valorLis==ins_prof){
+                               item = e("option",{"value":id_prof,"on-click":(evt)=>{recupDatos(evt.target.value)}},nombre);
+
+                               list2.appendChild(item);
+                        
+                            }   
+                            div1.appendChild(list2);
+                            if(div1.children.length>1){
+                                div1.removeChild(div1.children[0]);
+                            }
+            
+                        }
+    
+                    }
+                }
+                xmlhttp.open("GET","profesor.json");
+                xmlhttp.send();
+
+            });
+        });
+		  function recupDatos(idp){
+		  		var gradoArray =["Na","Lic/ing","Maestria","Doctorado"];
+		  		var carArray=["Na","Na","Computacion","Na","Electronica","Mecatronica","Matematicas","Fisica","Diseño","Empresariales","Alimentos","Industrial"];
+		  		var lisinfo=e("ul",{"id":"info"});
+		  		var div2=$("dat_prof");
+		  		div2.appendChild(lisinfo);
+		  		var xmlhttp=new XMLHttpRequest();
+                xmlhttp.onreadystatechange = function() {
+                    if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                        var jsonResponse = xmlhttp.responseText;
+                        var datos = JSON.parse(jsonResponse).filter(function(data){
+                            return data.id==idp;
+                        });
+
+                        var nombre    = e("li",{"id":"nombre"},"Nombre: "+datos[0].nombres);
+                        var apellidos = e("li",{"id":"apellidos"},"Apellidos: "+datos[0].apellidos);
+                        var carrera = e("li",{"id":"carrera"},"Carrera: "+carArray[datos[0].carrera_id]);
+                        var grado = e("li",{"id":"grado"},"Grado: "+gradoArray[datos[0].grado]);
+                        var email = e("li",{"id":"email"},"Email: "+datos[0].correo);
+                        lisinfo.appendChild(nombre);
+                        lisinfo.appendChild(apellidos);
+                        lisinfo.appendChild(carrera);
+                        lisinfo.appendChild(grado);
+                        lisinfo.appendChild(email);
+
+                        if(div2.children.length>1)
+                            div2.removeChild(div2.children[0]);
+                        }
+
+                    }
+                        xmlhttp.open("GET","profesor.json");
+                        xmlhttp.send();
+		  }
+
+          function e(tag){
+                      var ele = document.createElement(tag);
+                      if(arguments.length > 1 ){
+                          var seg = arguments[1];
+                          var pri=1;
+                          if(!(seg instanceof HTMLElement) &&(typeof seg=="object")){
+                              for(attr in seg){
+                                  var p = attr.substr(0,3);
+                                  if(p!="on-"){
+                                      ele.setAttribute(attr,seg[attr]);
+                                  }
+                                  else{
+                                      var ev = attr.substr(3);
+                                      ele.addEventListener(ev,seg[attr]);
+                                  }
+                                  var pri=2;
+                              }
+                              for(var i = pri;i<arguments.length;i++){
+                                  var e1 = arguments[i];
+                                  if(e1 instanceof HTMLElement){
+                                      ele.appendChild(e1);
+                                  }
+                                  else if(typeof e1 == "string"){
+                                      var nel = document.createTextNode(e1);
+                                      ele.appendChild(nel);
+                                  }
+                                  else{
+                                      cosole.warn("Tipo no reconocido",e1);
+                                      throw "Tipo de argumento no reconocido";
+                                  }
+
+                              }
+                              return ele;
+
+                          }
+
+                      }
+
+                  }
+
+                  function $(id){
+                    var r = null;
+                    if(typeof id =="array") r = id.map($);
+
+                    else r = document.getElementById(id);
+                    return r;
+                  }
+
+
+    	</script>
+	</head>
+
+    <body>
+        <div id="container">
+            <ul id="nav">
+
+                <li><a href="../index.html"><span><img src="home.png"/>Inicio</span></a>
+                <li><a href="grafica_AlumXCar.html"><span><img src="chart2.png" />Graph1</span></a>
+
+                <li><a href="grafica_PxIns.html"><img src="graph.png" />Graph2</a></li>
+                <li><a href="ins.html"><img src="catalog.png" />Catalogo</a></li>
+                <li><a href="../markdown/indice.html"><img src="indice.png" />Indice</a></li>
+                <li><a href="../markdown/parse.html"><img src="crear.png" />Crear Contenido</a></li>
+            </ul>
+      </div>
+      <header>
+        CATALOGO DE PROFESORES
+      </header>
+
+    	<p>Lista de Institutos</p>
+    	
+     	<select id="sele">
+      <option value="0" selected="selected">Institutos</option>
+			<option value="2">Computacion</option>
+			<option value="17">Diseño</option>
+			<option value="15">Ciencias Sociales</option>
+			<option value="14">Electronica</option>
+			<option value="16">Agroindustrias</option>
+            <option value="18">Fisica y Matemáticas</option>
+		</select>
+		<p>Lista de Profesores</p>
+		<div id="elem"></div>
+
+
+		<div id="dat_prof"></div>  
+    </body>
+    
+</html>

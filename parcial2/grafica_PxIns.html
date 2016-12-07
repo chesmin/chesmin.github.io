@@ -1,0 +1,125 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>Grafica Profesores</title>
+    <link rel="stylesheet" href="menu.css" type="text/css" media="screen">
+    <meta charset="utf-8">
+    <script src="Chart.bundle.js"></script>
+    <script src="utils.js"></script>
+    <style>
+    
+    canvas {
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
+        height: 800px;
+        width: 600px;
+    }
+   
+    </style>
+    <script>
+      window.addEventListener("load",function(){
+        // var creagraf = $("grafica1");
+        
+       // creagraf.addEventListener("click",function(){
+        var xmlhttp=new XMLHttpRequest();
+        var arrayIns=[0,0,0,0,0,0,0,0,0,0,0,0,0];
+        xmlhttp.onreadystatechange = function() {
+            var arrayId=[2,14,15,16,17,18,19,20,21,23,24,25,26];
+            var fil;
+            var x=0;
+            var j=0;
+             if (xmlhttp.readyState==4 && xmlhttp.status==200) {
+                var jsonResponse = xmlhttp.responseText;
+                var objeto_json = JSON.parse(jsonResponse);
+                for(var i=0;i<arrayId.length;i++){
+                    var profes=objeto_json.filter(function(data){return data.instituto_id==arrayId[i]});
+                    arrayIns[i]=profes.length;
+
+               }
+                grafica(arrayIns);
+                //console.log(arrayIns);
+    
+            }
+
+
+        }
+                xmlhttp.open("GET","profesor.json");
+                xmlhttp.send();
+                
+//});
+
+     });
+
+        function grafica(arreg){
+             var color = Chart.helpers.color;
+             if(window.myHorizontalBar!=null){
+                myHorizontalBar.destroy();
+            }
+                console.log(arreg);
+        var horizontalBarChartData = {
+            labels: ["Computacion", "Mecatronica", "Ciencias Sociales", "Agroindustrias", "Diseño", "F Y M", "Hidrologia","Mineria","Estudios de Posgrado","Industrial","Idiomas","Universidad Virtual","Nova Universitas"],
+            datasets: [{
+                label: 'Profesores',
+                backgroundColor: color(window.chartColors.red).alpha(0.5).rgbString(),
+                borderColor: window.chartColors.red,
+                borderWidth: 1,
+                data:arreg
+
+            }]
+
+        };
+         var ctx = document.getElementById("canvas").getContext("2d");
+            window.myHorizontalBar = new Chart(ctx, {
+                type: 'horizontalBar',
+                data: horizontalBarChartData,
+                options: {
+                    elements: {
+                        rectangle: {
+                            borderWidth: 2,
+                        }
+                    },
+                    responsive: true,
+                    legend: {
+                        position: 'right',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Instituto X Profesores'
+
+                    }
+                }
+            });
+        }
+        function $(id){
+                    var r = null;
+                    if(typeof id =="array") r = id.map($);
+
+                    else r = document.getElementById(id);
+                    return r;
+                  }
+   
+        
+    </script>
+</head>
+
+<body>
+    <div id="container">
+        <ul id="nav">
+
+            <li><a href="../index.html"><span><img src="home.png"/>Inicio</span></a>
+            <li><a href="grafica_AlumXCar.html"><span><img src="chart2.png" />Graph1</span></a>
+
+            <li><a href="grafica_PxIns.html"><img src="graph.png" />Graph2</a></li>
+            <li><a href="ins.html"><img src="catalog.png" />Catalogo</a></li>
+            <li><a href="../markdown/indice.html"><img src="indice.png" />Indice</a></li>
+            <li><a href="../markdown/parse.html"><img src="crear.png" />Crear contenido</a></li>
+        </ul>
+    </div>
+    <div id="container" style="width: 80%";>
+        <canvas id="canvas"></canvas>
+    </div>
+</body>
+
+</html>

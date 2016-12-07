@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Markdown</title>
+	<script src="lib/markdown.js"></script>
+	<link rel="stylesheet" href="../menu2.css" type="text/css">
+  <style type="text/css">
+    #files{
+      margin-top: 40px;
+      margin-left: 50px;
+  border: 1px solid #dedede;
+  border-radius: 3px;
+  color: #555;
+  display: inline-block;
+  font: bold 12px/12px Arial;
+  padding: 8px 11px;
+  text-decoration: none;
+}
+
+    }
+  </style>
+	<script>
+		 window.addEventListener("load",function(){
+        var cadena=[];
+        document.getElementById("files").addEventListener("change",function(event){
+          var input = event.target;
+
+          var reader = new FileReader();
+          reader.onload = function(){
+          var text = reader.result;
+          var result = markdown.toHTML(text);
+          console.log(result);
+          
+          muestraContenido(result);
+          };
+          reader.readAsText(input.files[0]);
+
+        });
+      });
+
+      function muestraContenido(texto){
+        var boton = document.getElementById('files');
+        document.body.removeChild(boton);
+        var dv = document.getElementById('Dprincipal');
+        dv.innerHTML = texto;
+      }
+	</script>
+</head>
+<body>
+	<div id="container">
+		<ul id="nav">
+
+			<li><a href="../index.html"><span><img src="../home.png"/>Inicio</span></a>
+			<li><a href="../parcial2/grafica_AlumXCar.html"><span><img src="../chart2.png" />Graph1</span></a>
+
+			<li><a href="../parcial2/grafica_PxIns.html"><img src="../graph.png" />Graph2</a></li>
+			<li><a href="../parcial2/ins.html"><img src="../catalog.png" />Catalogo</a></li>
+			<li><a href="indice2.html"><img src="../indice.png" />Indice</a></li>
+			<li><a href="parse.html"><img src="../crear.png" />Crear contenido</a></li>
+		</ul>
+	</div>
+	<input type="file" id="files" name="files"/>
+    <div id="Dprincipal"></div>
+</body>
+</html>

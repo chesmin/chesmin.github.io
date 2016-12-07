@@ -1,0 +1,32 @@
+[
+    {
+        "id": 4,
+        "profesor_id": 160,
+        "asignatura_id": 241,
+        "preferente": 1
+    },
+    {
+        "id": 5,
+        "profesor_id": 160,
+        "asignatura_id": 245,
+        "preferente": 1
+    },
+    {
+        "id": 6,
+        "profesor_id": 160,
+        "asignatura_id": 677,
+        "preferente": 1
+    },
+    {
+        "id": 7,
+        "profesor_id": 160,
+        "asignatura_id": 586,
+        "preferente": 1
+    },
+    {
+        "id": 8,
+        "profesor_id": 22,
+        "asignatura_id": 91,
+        "preferente": 1
+    }
+]
